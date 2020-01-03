@@ -2,11 +2,11 @@ package com.lichen.javabrains.dao;
 
 import com.lichen.javabrains.model.Circle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,23 +14,38 @@ import java.sql.SQLException;
 @Component
 public class JdbcDaoImpl {
 
-    @Autowired
     private DataSource dataSource;
+
+    private JdbcTemplate jdbcTemplate;
 
     public DataSource getDataSource() {
         return dataSource;
     }
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.dataSource = dataSource;
     }
 
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public int getCircleCount() {
+        String sql = "SELECT COUNT(*) FROM circle";
+        return jdbcTemplate.queryForInt(sql);
+    }
 
     public Circle getCircle(int circleId) {
         Connection conn = null;
-        String driver = "org.apache.derby.jdbc.ClientDriver";
+
         try{
-            conn = dataSource.getConnection();
+
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM circle where id = ?");
             ps.setInt(1, circleId);
 
