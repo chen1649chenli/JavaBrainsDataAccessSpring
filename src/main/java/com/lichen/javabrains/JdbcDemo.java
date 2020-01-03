@@ -15,5 +15,8 @@ public class JdbcDemo {
         System.out.println(dao.getCircleName(1));
         System.out.println(dao.getCircle(1).getName());
         System.out.println(dao.getALlCircle().size());
+        dao.insertCircle(new Circle(3, "third circle"));
+        System.out.println(dao.getALlCircle().size());
+        //dao.createTriangleTable();
     }
 }
